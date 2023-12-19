@@ -1,18 +1,29 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import './index.css'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { Auth0Provider } from '@auth0/auth0-react';
+import App from './App.jsx';
+import './index.css';
 import dotenv from 'dotenv';
-dotenv.config();
 
-//importrar variables de entorno de para domain y clientId
+//dotenv.config();
 
+const onRedirectCallback = (redirectResult) => {
+  // Manejar lógica personalizada después de la redirección
+  console.log(redirectResult);
+};
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Auth0Provider  domain="dev-mxntk40w42hj7fze.us.auth0.com" clientId="R8Si6nJwh5Kv1yPl3FEqWaJDV8hHsPyL">
-      <App />
+    <Auth0Provider
+      domain="dev-mxntk40w42hj7fze.us.auth0.com"
+      clientId="R8Si6nJwh5Kv1yPl3FEqWaJDV8hHsPyL"
+      /* redirectUri={window.location.origin} */
+      onRedirectCallback={onRedirectCallback}
+    >
+      <Router>
+        <App />
+      </Router>
     </Auth0Provider>
   </React.StrictMode>,
-)
+);
