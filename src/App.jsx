@@ -1,14 +1,51 @@
-import { useState } from 'react'
-import './App.css'
+import { useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+import axios from "axios";
+import Nav from "./components/nav/nav";
+import Home from "./components/home/home";
+import Profile from "./components/userProfile/userProfile";
+import Turns from "./components/turns/turns";
+import Footer from "./components/footer/footer";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { user } = useAuth0();
+  let sendUser;
+  if (user) {
+    sendUser = {
+      name: user.name,
+      email: user.email,
+    };
+  }
+
+  useEffect(() => {
+    const postUser = async () => {
+      if (user) {
+        try {
+          const response = await axios.post(
+            `${import.meta.env.VITE_BACKEND_URL}/users/create`,
+            sendUser
+          );
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    postUser(user);
+  }, [user]);
 
   return (
     <div>
-      <h1>esto es app</h1>
+      <Nav />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/turns" element={<Turns />} />
+      </Routes>
+      <Footer />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
