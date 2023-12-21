@@ -6,8 +6,8 @@ import Nav from "./components/nav/nav";
 import Home from "./components/home/home";
 import Profile from "./components/userProfile/userProfile";
 import Turns from "./components/turns/turns";
-import Footer from "./components/footer/footer";
 import "./App.css";
+import Admin from "./components/admin/admin";
 
 function App() {
   const { user } = useAuth0();
@@ -42,8 +42,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/turns" element={<Turns />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
-      <Footer />
     </div>
   );
 }

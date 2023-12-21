@@ -9,7 +9,7 @@ import "./nav.css";
 
 const Nav = () => {
   const { isAuthenticated, user } = useAuth0();
-console.log(user);
+
   return (
     <div className="div_container_nav">
       <NavLink to="/">
