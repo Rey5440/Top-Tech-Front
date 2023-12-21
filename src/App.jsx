@@ -8,6 +8,7 @@ import Profile from "./components/userProfile/userProfile";
 import Turns from "./components/turns/turns";
 import "./App.css";
 import Admin from "./components/admin/admin";
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
 function App() {
   const { user } = useAuth0();
@@ -24,7 +25,7 @@ function App() {
       if (user) {
         try {
           const response = await axios.post(
-            `${import.meta.env.VITE_BACKEND_URL}/users/create`,
+            `${VITE_BACKEND_URL}/users/create`,
             sendUser
           );
         } catch (error) {
