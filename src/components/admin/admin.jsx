@@ -21,7 +21,7 @@ const Admin = () => {
             { email: email }
           );
           const { data } = response;
-          setIsAdmin(data);
+          setIsAdmin(data.isadmin);
         } catch (error) {
           console.error("Error al obtener la credencial:", error);
           alert("Error al obtener la credencial");
@@ -32,6 +32,8 @@ const Admin = () => {
       setIsAdmin(false);
     }
   }, [user]);
+
+
   return (
     <div>
       {isAdmin === true && isAdmin ? (
