@@ -8,6 +8,7 @@ import Profile from "./components/userProfile/userProfile";
 import Turns from "./components/turns/turns";
 import "./App.css";
 import Admin from "./components/admin/admin";
+import Worker from "./components/worker/worker";
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/turns" element={<Turns />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/worker" element={<Worker />} />
       </Routes>
     </div>
   );

@@ -1,0 +1,11 @@
+.visible {
+    display: inline-block;
+    cursor: pointer;
+    padding: 8px;
+    border: 1px solid #ccc;
+    margin: 2px;
+  }
+  
+  .hidden {
+    display: none;
+  }
