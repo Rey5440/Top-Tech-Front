@@ -4,7 +4,7 @@ import "./home.css";
 
 const Home = () => {
   return (
-    <div className="div_container_home">
+    <div>
       <CustomCalendar/>
       <Footer/>
     </div>

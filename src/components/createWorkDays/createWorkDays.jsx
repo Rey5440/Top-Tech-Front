@@ -5,8 +5,8 @@ const CreateWorkDays = () => {
 
   return (
     <div>
-      <h1 className='palabra'>palabra</h1>
-
+      <h1 className='palabra'>estas en CreateWorkDays</h1>
+      
     </div>
   );
 };

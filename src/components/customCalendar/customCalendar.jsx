@@ -1,14 +1,43 @@
+import daysMonthCalendarCustom from '../../functions/daysMonthCalendarCustom';
+import getToday from '../../functions/getToday';
+import './customCalendar.css';
 
 const CustomCalendar = () => {
-    const date = new Date()
-    const CleanMonth = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
+  const daysCalendarCustom = daysMonthCalendarCustom(21, false);
+  const daysOfWeek = ["lun", "mar", "mie", "jue", "vie", "sab", "dom"];
+  const getDayPosition = getToday(); // devuelve número que representa qué día de la semana es (lunes, martes, etc)
 
-    return (
-        <div>
-            <h1>calendario</h1>
-            {/* <h1>{date}</h1> */}
-        </div>
-    )
-}
+  return (
+    <div>
+      <h1>calendario</h1>
+      <div className='line7day'>
+        {daysOfWeek.map(day => (
+          <div key={day}>{day}</div>
+        ))}
+      </div>
+      <div className='line7'>
+        {daysCalendarCustom.month1.map((day, index) => (
+          <button
+            key={index}
+            className='month1'
+            style={{
+              gridColumnStart: index === 0 ? getDayPosition : 'auto',
+              ...(index === 0 ? { backgroundColor: '#e0e0e0' } : {}), // Aplicar backgroundColor solo al primer botón
+            }}
+          >
+            {day}
+          </button>
+        ))}
+
+        {daysCalendarCustom.month2.map((day, index) => (
+          <button 
+          key={index + 100}
+          className='month2'
+          >{day}</button>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default CustomCalendar;
