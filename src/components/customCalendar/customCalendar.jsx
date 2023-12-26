@@ -41,3 +41,8 @@ const CustomCalendar = () => {
 };
 
 export default CustomCalendar;
+
+/* {
+    "_id": "6584df2bde76b1133c244c87",
+    "date": "11/08/1990" 
+  } */
