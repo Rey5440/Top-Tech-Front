@@ -2,10 +2,10 @@ import daysMonthCalendarCustom from '../../functions/daysMonthCalendarCustom';
 import getToday from '../../functions/getToday';
 import './customCalendar.css';
 
-const CustomCalendar = () => {
-  const daysCalendarCustom = daysMonthCalendarCustom(21, false);
+const CustomCalendar = ({ showDays, boolean }) => {
+  const daysCalendarCustom = daysMonthCalendarCustom(showDays, boolean);
   const daysOfWeek = ["lun", "mar", "mie", "jue", "vie", "sab", "dom"];
-  const getDayPosition = getToday(); // devuelve número que representa qué día de la semana es (lunes, martes, etc)
+  const getDayPosition = boolean ? getToday() : getToday() + 1 // devuelve número que representa qué día de la semana es (lunes, martes, etc)
 
   return (
     <div>

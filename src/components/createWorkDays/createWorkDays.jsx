@@ -6,7 +6,7 @@ const CreateWorkDays = () => {
 
   return (
     <div>
-      <CustomCalendar />
+      <CustomCalendar showDays={5} boolean={false}/>
       
     </div>
   );
