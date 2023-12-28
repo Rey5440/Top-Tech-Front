@@ -1,13 +1,16 @@
-import CustomCalendar from '../customCalendar/customCalendar';
-import './hola.css';
+import { useState } from "react";
+import CustomCalendar from "../customCalendar/customCalendar";
+import "./hola.css";
+import SelectedDay from "../selectedDay/selectedDay";
 
 const CreateWorkDays = () => {
-
-
+  const [dayIsSelected, setDayIsSelected] = useState({});
   return (
     <div>
-      <CustomCalendar showDays={5} boolean={false}/>
-      
+      <CustomCalendar setDayIsSelected={setDayIsSelected} />
+      {dayIsSelected.currentDay && (
+        <SelectedDay dayIsSelected={dayIsSelected} />
+      )}
     </div>
   );
 };
