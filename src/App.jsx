@@ -32,7 +32,7 @@ function App() {
             `${VITE_BACKEND_URL}/users/create`,
             sendUser
           );
-          if (response.data.worker) {
+          if (response.data) {
             setUserData(response.data);
           }
         } catch (error) {
@@ -42,7 +42,6 @@ function App() {
     };
     postUser(user);
   }, [user]);
-
   return (
     <div>
       <Nav />
@@ -50,8 +49,8 @@ function App() {
         {<Route path="/" element={<Home user={userData} />} />}
         <Route path="/profile" element={<Profile />} />
         <Route path="/turns" element={<Turns />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/worker" element={<Worker />} />
+        <Route path="/admin" element={<Admin user={userData} />} />
+        <Route path="/worker" element={<Worker user={userData} />} />
       </Routes>
     </div>
   );
