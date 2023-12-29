@@ -17,7 +17,7 @@ const Turns = () => {
           `${VITE_BACKEND_URL}/workdays/daysByService`
         );
         const { data } = response;
-        console.log(data);
+       /*  console.log(data); */
         setWorkDays(data);
       } catch (error) {
         console.error("Error al obtener los servicios:", error);

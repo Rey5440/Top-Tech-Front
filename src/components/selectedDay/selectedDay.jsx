@@ -1,30 +1,54 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import './selectedDay.css'
 
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const SelectedDay = () => {
+  const totalSlots = 18;
+  const [selectedSlots, setSelectedSlots] = useState([]);
+  const [isMouseDown, setIsMouseDown] = useState(false);
 
+  const handleMouseDown = (index) => {
+    setIsMouseDown(true);
+    updateSelectedSlots(index);
+  };
 
-const SelectedDay = ({ dayIsSelected }) => {
-  const [timeAvailable, setTimeAvailable] = useState(/* como se trae??? */);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${VITE_BACKEND_URL}/workdays/getdays`,
-          dayIsSelected.currentDay,
-          dayIsSelected.email
-        );
-        const { data } = response;
-        setTimeAvailable(data);
-      } catch (error) {
-        console.error("Error al obtener los dias:", error);
-        alert("Error al obtener los dias");
+  const handleMouseEnter = (index) => {
+    if (isMouseDown) {
+      updateSelectedSlots(index);
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsMouseDown(false);
+  };
+
+  const updateSelectedSlots = (index) => {
+    setSelectedSlots((prevSelection) => {
+      if (prevSelection.includes(index)) {
+        return prevSelection.filter((value) => value !== index);
+      } else {
+        return [...prevSelection, index];
       }
-    };
-    fetchData();
-  }, []);
+    });
+  };
 
-  return <div>Time available</div>;
+  return (
+    <div>
+      <div onMouseUp={handleMouseUp}>
+        {Array.from({ length: totalSlots }, (_, index) => (
+          <div
+            key={index}
+            className={`slot ${
+              selectedSlots.includes(index) ? "selected" : ""
+            }`}
+            onMouseDown={() => handleMouseDown(index)}
+            onMouseEnter={() => handleMouseEnter(index)}
+          >
+            {index}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default SelectedDay;

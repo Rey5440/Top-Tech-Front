@@ -7,12 +7,12 @@ import "./customCalendar.css";
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-const CustomCalendar = ({ setDayIsSelected, amountOfDays }) => {
+const CustomCalendar = ({ setDayIsSelected, amountOfDays, dayIsSelected }) => {
   const { user } = useAuth0();
   const daysCalendarCustom = daysMonthCalendarCustom(amountOfDays, false);
   let { currentMonth, nextMonth } = daysCalendarCustom;
   const daysOfWeek = ["lun", "mar", "mie", "jue", "vie", "sab", "dom"];
-  const getDayPosition = getToday(); // devuelve número que representa qué día de la semana es (lunes, martes, etc)
+  const getDayPosition = getToday() + 1; // devuelve número que representa qué día de la semana es (lunes, martes, etc)
   const [typeOfDays, setTypeOfDays] = useState({}); //devuelve ej: {12:{15:"toUpdate"},12:{16:"warningUpdate"}}
 
   useEffect(() => {
@@ -26,7 +26,6 @@ const CustomCalendar = ({ setDayIsSelected, amountOfDays }) => {
             email
           );
           const { data } = response;
-          console.log(data);
           setTypeOfDays(data);
         } catch (error) {
           console.error("Error al obtener los dias:", error);
@@ -38,12 +37,20 @@ const CustomCalendar = ({ setDayIsSelected, amountOfDays }) => {
   }, []);
 
   const handleDay = (day, colorDay) => {
-    setDayIsSelected({
-      currentDay: day,
-      colorDay: colorDay,
-      email: user.email,
+    setDayIsSelected(prevDays => {  // prevDays representa lo que contiene el estado local
+      const updatedDays = { ...prevDays };  // crea una copia de lo que contenia antes de agregar un dia
+      if (updatedDays[day]) {  // si ya existia un objeto con la clave day la borra
+        delete updatedDays[day];
+      } else {  // si no existia un objeto con esa clave la agrega
+        updatedDays[day] = {        // fijate la jugarreta, crea el objeto para
+          colorDay: colorDay,       // luego acceder a la propiedad day
+          email: user.email,
+        };
+      }
+      return updatedDays;  // al retornar dentro del set, solo guarda el retorno
     });
   };
+
   return (
     <div>
       <h1>calendario</h1>
@@ -74,9 +81,10 @@ const CustomCalendar = ({ setDayIsSelected, amountOfDays }) => {
               onClick={() => handleDay(day, colorDay)}
               style={{
                 gridColumnStart: index === 0 ? getDayPosition : "auto",
-                ...(index === 0 ? { backgroundColor: "#e0e0e0" } : {}),
+                /* ...(index === 0 ? { backgroundColor: "#e0e0e0" } : {}), */
                 backgroundColor: colorDay, // Asignar colorDay al backgroundColor
-              }}
+                ...(dayIsSelected[day] ? { backgroundColor: 'blue' } : {}) // si el dia existe en el estado local...
+              }}                                                           // cambia el backgraund a azul
             >
               {day}
             </button>
@@ -86,11 +94,11 @@ const CustomCalendar = ({ setDayIsSelected, amountOfDays }) => {
         {daysCalendarCustom.month2.map((day, index) => {
           let colorDay; // Inicializar colorDay fuera del mapeo
 
-          if (!typeOfDays[currentMonth] || !typeOfDays[currentMonth][day]) {
+          if (!typeOfDays[nextMonth] || !typeOfDays[nextMonth][day]) {
             colorDay = "green";
           } else if (
-            typeOfDays[currentMonth] &&
-            typeOfDays[currentMonth][day] === "toUpdate"
+            typeOfDays[nextMonth] &&
+            typeOfDays[nextMonth][day] === "toUpdate"
           ) {
             colorDay = "yellow";
           } else {
@@ -104,7 +112,8 @@ const CustomCalendar = ({ setDayIsSelected, amountOfDays }) => {
               onClick={() => handleDay(day, colorDay)}
               style={{
                 backgroundColor: colorDay, // Asignar colorDay al backgroundColor
-              }}
+                ...(dayIsSelected[day] ? { backgroundColor: 'blue' } : {}) // si el dia existe en el estado local..
+              }}                                                           // cambia el backgraund a azul
             >
               {day}
             </button>
@@ -116,8 +125,3 @@ const CustomCalendar = ({ setDayIsSelected, amountOfDays }) => {
 };
 
 export default CustomCalendar;
-
-/* {
-    "_id": "6584df2bde76b1133c244c87",
-    "date": "11/08/1990" 
-  } */

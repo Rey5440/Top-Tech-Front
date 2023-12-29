@@ -5,8 +5,8 @@ const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const SelectedDayTurns = ({ dayIsSelected, workdays }) => {
       const [timeAvailable, setTimeAvailable] = useState(/* como se trae??? */);
-      console.log(workdays);
-      console.log(dayIsSelected);
+/*       console.log(workdays);
+      console.log(dayIsSelected); */
   useEffect(() => {
     const fetchData = async () => {
       try {

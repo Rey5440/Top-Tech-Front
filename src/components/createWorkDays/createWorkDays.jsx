@@ -7,10 +7,8 @@ const CreateWorkDays = () => {
   const [dayIsSelected, setDayIsSelected] = useState({});
   return (
     <div>
-      <CustomCalendar setDayIsSelected={setDayIsSelected} />
-      {dayIsSelected.currentDay && (
-        <SelectedDay dayIsSelected={dayIsSelected} />
-      )}
+      <CustomCalendar setDayIsSelected={setDayIsSelected} amountOfDays={12} dayIsSelected={dayIsSelected} />
+      <SelectedDay/>
     </div>
   );
 };

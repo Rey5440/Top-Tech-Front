@@ -12,7 +12,7 @@ const CustomCalendarTurns = ({
   setDayIsSelected,
   amountOfDays,
 }) => {
-  const daysCalendarCustom = daysMonthCalendarCustom(amountOfDays, false);
+  const daysCalendarCustom = daysMonthCalendarCustom(amountOfDays, true);
   // const { user } = useAuth0(); // Obtener el usuario actual
   const { currentMonth, nextMonth } = daysCalendarCustom;
   const daysOfWeek = ["lun", "mar", "mie", "jue", "vie", "sab", "dom"];
@@ -39,7 +39,7 @@ const CustomCalendarTurns = ({
      currentDay: day,
    }));
   };
-  console.log(daysForCalendar);
+  /* console.log(daysForCalendar); */
   return (
     <div>
       <h1>Calendario de turnos</h1>
