@@ -4,9 +4,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { Auth0Provider } from '@auth0/auth0-react';
 import App from './App.jsx';
 import './index.css';
-import dotenv from 'dotenv';
-
-//dotenv.config();
 
 const onRedirectCallback = (redirectResult) => {
   // Manejar lógica personalizada después de la redirección
@@ -18,7 +15,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <Auth0Provider
       domain="dev-mxntk40w42hj7fze.us.auth0.com"
       clientId="R8Si6nJwh5Kv1yPl3FEqWaJDV8hHsPyL"
-      /* redirectUri={window.location.origin} */
       onRedirectCallback={onRedirectCallback}
     >
       <Router>

@@ -1,5 +1,5 @@
 
-const Turnos = () =>{
+const Turns = () =>{
 
     return (
         <div>
@@ -8,4 +8,4 @@ const Turnos = () =>{
     )
 }
 
-export default Turnos;
+export default Turns;
