@@ -5,17 +5,17 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import App from './App.jsx';
 import './index.css';
 
-const onRedirectCallback = (redirectResult) => {
-  // Manejar lógica personalizada después de la redirección
-  console.log(redirectResult);
-};
+const domain = import.meta.env.VITE_AUTH0_DOMAIN;
+const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Auth0Provider
-      domain="dev-mxntk40w42hj7fze.us.auth0.com"
-      clientId="R8Si6nJwh5Kv1yPl3FEqWaJDV8hHsPyL"
-      onRedirectCallback={onRedirectCallback}
+      domain={domain}
+      clientId={clientId}
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+      }}
     >
       <Router>
         <App />
