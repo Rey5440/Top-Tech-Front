@@ -1,0 +1,33 @@
+.line7day {
+  display: grid;
+  grid-template-columns: repeat(7, 40px);
+  text-align: center;
+}
+.line7 {
+  display: grid;
+  grid-template-columns: repeat(7, 40px);
+  grid-template-rows: repeat(6, 40px)
+
+}
+.month1 {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 50%
+
+}
+.month1:hover {
+  background-color: #e0e0e0;
+  border-radius: 50%;
+}
+.month2 {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 50%
+
+}
+.month2:hover {
+  background-color: #ec5113e8;
+  border-radius: 50%;
+}
