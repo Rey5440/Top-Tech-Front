@@ -12,7 +12,7 @@ const CustomCalendar = ({ setDayIsSelected, amountOfDays }) => {
   const daysCalendarCustom = daysMonthCalendarCustom(amountOfDays, false);
   let { currentMonth, nextMonth } = daysCalendarCustom;
   const daysOfWeek = ["lun", "mar", "mie", "jue", "vie", "sab", "dom"];
-  const getDayPosition = getToday(); // devuelve número que representa qué día de la semana es (lunes, martes, etc)
+  const getDayPosition = getToday()+1; // devuelve número que representa qué día de la semana es (lunes, martes, etc)
   const [typeOfDays, setTypeOfDays] = useState({}); //devuelve ej: {12:{15:"toUpdate"},12:{16:"warningUpdate"}}
 
   useEffect(() => {
@@ -86,11 +86,11 @@ const CustomCalendar = ({ setDayIsSelected, amountOfDays }) => {
         {daysCalendarCustom.month2.map((day, index) => {
           let colorDay; // Inicializar colorDay fuera del mapeo
 
-          if (!typeOfDays[currentMonth] || !typeOfDays[currentMonth][day]) {
+          if (!typeOfDays[nextMonth] || !typeOfDays[nextMonth][day]) {
             colorDay = "green";
           } else if (
-            typeOfDays[currentMonth] &&
-            typeOfDays[currentMonth][day] === "toUpdate"
+            typeOfDays[nextMonth] &&
+            typeOfDays[nextMonth][day] === "toUpdate"
           ) {
             colorDay = "yellow";
           } else {

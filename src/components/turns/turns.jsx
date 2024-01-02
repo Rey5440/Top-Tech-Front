@@ -6,10 +6,11 @@ import SelectedDayTurns from "../selectedDay/selectedDayTurns";
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Turns = () => {
-  const [workdays, setWorkDays] = useState([]);
+  const [workDays, setWorkDays] = useState([]);
   const [arrOfServices, setArrOfServices] = useState([]);
   const [dayIsSelected, setDayIsSelected] = useState(false);
   const [daysForCalendar, setDaysForCalendar] = useState({});
+  const [workerWithTime, setWorkerWithTime] = useState({});
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -17,7 +18,6 @@ const Turns = () => {
           `${VITE_BACKEND_URL}/workdays/daysByService`
         );
         const { data } = response;
-        console.log(data);
         setWorkDays(data);
       } catch (error) {
         console.error("Error al obtener los servicios:", error);
@@ -28,9 +28,9 @@ const Turns = () => {
   }, []);
 
   useEffect(() => {
-    // pone en un estado local arrOfServices los servicios totales disponibles 
-    if (workdays.length > 0) {
-      const servicesArray = workdays.reduce((accumulator, workday) => {
+    // pone en un estado local arrOfServices los servicios totales disponibles
+    if (workDays.length > 0) {
+      const servicesArray = workDays.reduce((accumulator, workday) => {
         const services = Object.keys(workday.services);
         services.forEach((service) => {
           if (!accumulator.includes(service)) {
@@ -41,46 +41,80 @@ const Turns = () => {
       }, []);
       setArrOfServices(servicesArray);
     }
-  }, [workdays]);
+  }, [workDays]);
 
   const handleSelectService = async (selectedService) => {
-    // Buscar todos los dates en base al selectedService
-    const datesForSelectedService = workdays
-      .filter((workday) => workday.services[selectedService])
-      .map((workday) => workday.date);
-    // console.log(datesForSelectedService);
-    // console.log(selectedService);
-
     const result = {};
-    // Iterar sobre los días obtenidos de la base de datos
-    workdays.forEach((workday) => {
-      if (datesForSelectedService.includes(workday.date)) {
-        const dateParts = workday.date.split("/");
-        const month = parseInt(dateParts[1], 10);
-        const dayOfMonth = parseInt(dateParts[0], 10);
 
-        // Verificar si ya existe result[month] y asignar un valor en consecuencia
-        result[month] = result[month] || {};
+    workDays.forEach((workday) => {
+      if (workday.services.hasOwnProperty(selectedService)) {
+        const { time, services } = workday;
+        const serviceDuration = services[selectedService];
+        let noTimeAvailable;
 
-        // Verificar si workday.time está definido antes de llamar a some
-        result[month][dayOfMonth] =
-          Array.isArray(workday.time) &&
-          workday.time.some((minute) => {
-            return minute !== "free" && minute !== null;
-          })
-            ? "no se puede agendar"
-            : "se puede agendar";
+        for (let i = 0; i <= time.length; i++) {
+          let isConsecutive;
+
+          if (time[i] === "free") {
+            const consecutiveMinutes = Array.from(time).slice(
+              i,
+              Number(serviceDuration) + i
+            );
+
+            // Verificar si todos los minutos en la secuencia son diferentes de "free"
+            isConsecutive = consecutiveMinutes.every(
+              (minute) => minute === "free"
+            );
+            if (isConsecutive) {
+              const dateParts = workday.date.split("/");
+              const month = parseInt(dateParts[1], 10);
+              const dayOfMonth = parseInt(dateParts[0], 10);
+
+              // Verificar si ya existe result[month] y asignar un valor en consecuencia
+              result[month] = result[month] || {};
+              result[month][dayOfMonth] = "se puede agendar";
+
+              setWorkerWithTime((prevState) => ({
+                ...prevState,
+                [dayOfMonth]: {
+                  ...prevState[dayOfMonth],
+                  [workday.name]: [time, serviceDuration],
+                },
+              }));
+              noTimeAvailable = false;
+              return;
+            } else {
+              noTimeAvailable = true;
+            }
+          }
+          if (noTimeAvailable) {
+            const dateParts = workday.date.split("/");
+            const month = parseInt(dateParts[1], 10);
+            const dayOfMonth = parseInt(dateParts[0], 10);
+
+            // Verificar si ya existe result[month] y asignar un valor en consecuencia
+            result[month] = result[month] || {};
+
+            // Asignar el estado de agendado en consecuencia
+            result[month][dayOfMonth] = "no se puede agendar";
+          }
+        }
       }
     });
 
-    // console.log(result);
     setDayIsSelected((prevState) => ({
       ...prevState,
       currentService: selectedService,
     }));
     setDaysForCalendar(result);
-
   };
+
+  let justWorkerWithTime = {};
+  if (dayIsSelected.currentDay) {
+    if (workerWithTime[dayIsSelected.currentDay]) {
+      justWorkerWithTime = workerWithTime[dayIsSelected.currentDay];
+    }
+  }
 
   return (
     <div>
@@ -97,8 +131,8 @@ const Turns = () => {
           amountOfDays={20}
         />
       )}
-      {Object.keys(dayIsSelected).length > 1 && (
-        <SelectedDayTurns dayIsSelected={dayIsSelected} workdays={workdays} />
+      {Object.keys(justWorkerWithTime).length > 1 && (
+        <SelectedDayTurns justWorkerWithTime={justWorkerWithTime} />
       )}
     </div>
   );

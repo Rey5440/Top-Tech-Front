@@ -46,7 +46,7 @@ function App() {
     <div>
       <Nav />
       <Routes>
-        {<Route path="/" element={<Home user={userData} />} />}
+        <Route path="/" element={<Home user={userData} />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/turns" element={<Turns />} />
         <Route path="/admin" element={<Admin user={userData} />} />
