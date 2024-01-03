@@ -1,49 +1,68 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import daysMonthCalendarCustom from "../../functions/daysMonthCalendarCustom";
-import { useAuth0 } from "@auth0/auth0-react";
 import getToday from "../../functions/getToday";
-import axios from "axios";
+import obtainDayName from "../../functions/obtainDayName";
 import "./customCalendar.css";
 
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
-const CustomCalendar = ({ setDayIsSelected, amountOfDays }) => {
-  const { user } = useAuth0();
+const CustomCalendar = ({
+  setDayIsSelected,
+  amountOfDays,
+  dayIsSelected,
+  days,
+  setDays,
+}) => {
   const daysCalendarCustom = daysMonthCalendarCustom(amountOfDays, false);
-  let { currentMonth, nextMonth } = daysCalendarCustom;
+  let { currentMonth, nextMonth, currentYear, nextYear } = daysCalendarCustom;
   const daysOfWeek = ["lun", "mar", "mie", "jue", "vie", "sab", "dom"];
-  const getDayPosition = getToday()+1; // devuelve número que representa qué día de la semana es (lunes, martes, etc)
-  const [typeOfDays, setTypeOfDays] = useState({}); //devuelve ej: {12:{15:"toUpdate"},12:{16:"warningUpdate"}}
+  const getDayPosition = getToday() + 1;
+  const [exist50, setExist50] = useState(false);
+  console.log(dayIsSelected);
+  const workDays = [2, 3, 4, 5, 6, 7];
 
-  useEffect(() => {
-    if (user && user.email) {
-      let email = user.email;
+  const handleDay = (day, month) => {
+    if (dayIsSelected[month] && dayIsSelected[month][day]) {
+      // Si ya existe en dayIsSelected, lo quitamos
+      const { [day]: _, ...rest } = dayIsSelected[month];
 
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            `${VITE_BACKEND_URL}/workdays/getdays`,
-            email
-          );
-          const { data } = response;
-          console.log(data);
-          setTypeOfDays(data);
-        } catch (error) {
-          console.error("Error al obtener los dias:", error);
-          alert("Error al obtener los dias");
+      setDayIsSelected((prevState) => {
+        const newState = { ...prevState, [month]: rest };
+
+        if (Object.keys(rest).length < 1) {
+          delete newState[month];
         }
-      };
-      fetchData();
-    }
-  }, []);
 
-  const handleDay = (day, colorDay) => {
-    setDayIsSelected({
-      currentDay: day,
-      colorDay: colorDay,
-      email: user.email,
-    });
+        return newState;
+      });
+    } else {
+      if (days[month] && days[month][day]) {
+        // Si existe en days, limpiamos la información anterior y asignamos el nuevo valor
+        setDayIsSelected({
+          [month]: {
+            [day]: {},
+          },
+        });
+        setExist50(true);
+      } else {
+        // Si no existe en days ni en dayIsSelected, agregamos el nuevo día al estado local
+        if (exist50 == true) {
+          setDayIsSelected({
+            [month]: {
+              [day]: {},
+            },
+          });
+          setExist50(false);
+        }
+        setDayIsSelected((prevState) => ({
+          ...prevState,
+          [month]: {
+            ...prevState[month],
+            [day]: {},
+          },
+        }));
+      }
+    }
   };
+
   return (
     <div>
       <h1>calendario</h1>
@@ -52,30 +71,41 @@ const CustomCalendar = ({ setDayIsSelected, amountOfDays }) => {
           <div key={day}>{day}</div>
         ))}
       </div>
+
       <div className="line7">
         {daysCalendarCustom.month1.map((day, index) => {
-          let colorDay; // Inicializar colorDay fuera del mapeo
-          // console.log(typeOfDays[currentMonth][day]);
-          if (!typeOfDays[currentMonth] || !typeOfDays[currentMonth][day]) {
-            colorDay = "green";
-          } else if (
-            typeOfDays[currentMonth] &&
-            typeOfDays[currentMonth][day] === "toUpdate"
+          let dayName = obtainDayName(day, currentMonth, currentYear);
+          let disabled = false;
+          if (!workDays.includes(dayName)) {
+            disabled = true;
+          }
+          let colorDay = "#e0e0e0d2";
+          if (days && days[currentMonth] && days[currentMonth][day]) {
+            colorDay = "#5bfd33d0";
+          }
+          if (
+            days &&
+            days[currentMonth] &&
+            days[currentMonth][day] &&
+            days[currentMonth][day].turn
           ) {
-            colorDay = "yellow";
-          } else {
-            colorDay = "red";
+            colorDay = "#e6b226d0";
           }
 
           return (
             <button
               key={index}
               className="month1"
-              onClick={() => handleDay(day, colorDay)}
+              disabled={disabled}
+              onClick={() => handleDay(day, currentMonth)}
               style={{
                 gridColumnStart: index === 0 ? getDayPosition : "auto",
-                ...(index === 0 ? { backgroundColor: "#e0e0e0" } : {}),
-                backgroundColor: colorDay, // Asignar colorDay al backgroundColor
+                backgroundColor: colorDay,
+                ...(dayIsSelected[currentMonth] &&
+                dayIsSelected[currentMonth][day]
+                  ? { backgroundColor: "blue" }
+                  : {}),
+                cursor: disabled ? "auto" : "pointer",
               }}
             >
               {day}
@@ -84,26 +114,36 @@ const CustomCalendar = ({ setDayIsSelected, amountOfDays }) => {
         })}
 
         {daysCalendarCustom.month2.map((day, index) => {
-          let colorDay; // Inicializar colorDay fuera del mapeo
-
-          if (!typeOfDays[nextMonth] || !typeOfDays[nextMonth][day]) {
-            colorDay = "green";
-          } else if (
-            typeOfDays[nextMonth] &&
-            typeOfDays[nextMonth][day] === "toUpdate"
+          let dayName = obtainDayName(day, nextMonth, nextYear);
+          let disabled = false;
+          if (!workDays.includes(dayName)) {
+            disabled = true;
+          }
+          let colorDay = "#e0e0e0d2";
+          if (days && days[nextMonth] && days[nextMonth][day]) {
+            colorDay = "#5bfd33d0";
+          }
+          if (
+            days &&
+            days[nextMonth] &&
+            days[nextMonth][day] &&
+            days[nextMonth][day].turn
           ) {
-            colorDay = "yellow";
-          } else {
-            colorDay = "red";
+            colorDay = "#e6b226d0";
           }
 
           return (
             <button
               key={index + 100}
               className="month2"
-              onClick={() => handleDay(day, colorDay)}
+              disabled={disabled}
+              onClick={() => handleDay(day, nextMonth)}
               style={{
-                backgroundColor: colorDay, // Asignar colorDay al backgroundColor
+                backgroundColor: colorDay,
+                ...(dayIsSelected[nextMonth] && dayIsSelected[nextMonth][day]
+                  ? { backgroundColor: "blue" }
+                  : {}),
+                cursor: disabled ? "auto" : "pointer",
               }}
             >
               {day}
@@ -116,8 +156,3 @@ const CustomCalendar = ({ setDayIsSelected, amountOfDays }) => {
 };
 
 export default CustomCalendar;
-
-/* {
-    "_id": "6584df2bde76b1133c244c87",
-    "date": "11/08/1990" 
-  } */

@@ -4,7 +4,6 @@ import LoginButton from "../login/login";
 import LogoutButton from "../logout/logout";
 import Profile from "../userProfile/userProfile";
 import toHome from "../../assets/home.png";
-import toTurns from "../../assets/calendar.png";
 import "./nav.css";
 
 const Nav = () => {
@@ -12,12 +11,15 @@ const Nav = () => {
 
   return (
     <div className="div_container_nav">
-      <NavLink to="/">
-        Inicio
-        <img src={toHome} alt="inicio" width={"50px"} />
-      </NavLink>
-      {isAuthenticated ? <LogoutButton /> : <LoginButton />}
-      <Profile />
+      <div>
+        <NavLink to="/">
+          <img src={toHome} alt="inicio" width={"50px"} />
+        </NavLink>
+      </div>
+      <div className="div_subContainer_nav">
+        {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+        <Profile />
+      </div>
     </div>
   );
 };

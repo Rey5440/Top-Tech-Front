@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Services from "../services/services";
 import NotFound from "../page_not_found/not_found";
 import Users from "../users/users";
+import PublicAttention from "../publicAttention/publicAttention";
 
 const Admin = ({ user }) => {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -21,6 +22,8 @@ const Admin = ({ user }) => {
           <Services />
           <hr />
           <Users />
+          <hr />
+          <PublicAttention />
           <hr />
         </div>
       ) : (

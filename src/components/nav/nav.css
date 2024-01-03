@@ -1,3 +1,7 @@
 .div_container_nav{
-      background-color: bisque;
+      display: flex;
+      justify-content: space-between;
+}
+.div_subContainer_nav{
+      display: flex;
 }
