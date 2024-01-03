@@ -11,7 +11,7 @@ function daysMonthCalendarCustom(totalDays, boolean) {
     const currentDate = new Date(); // 2023-12-24T04:08:26.490Z
     const currentYear = currentDate.getFullYear(); // 2023
     const currentMonth = currentDate.getMonth() + 1; // 12
-  
+
     const daysCurrentMonth = getDaysInMonth(currentYear, currentMonth); // dias del mes actual en un array
     const daysNextMonth = getDaysInMonth(currentYear, currentMonth + 1); // dias del mes siguiente en un array
   
@@ -27,7 +27,7 @@ function daysMonthCalendarCustom(totalDays, boolean) {
   
     if (remaining.length > totalDays) {
       const resultMonth1 = remaining.slice(0, totalDays);
-      const result1 = { month1: resultMonth1, month2: [] };
+      const result1 = { month1: resultMonth1, month2: [], currentMonth:currentMonth, nextMonth: currentMonth === 12 ? 1 : currentMonth + 1};
       return result1;
     }
   

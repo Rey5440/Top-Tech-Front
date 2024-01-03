@@ -1,30 +1,57 @@
 import { useState } from "react";
 import daysMonthCalendarCustom from "../../functions/daysMonthCalendarCustom";
-import { useAuth0 } from "@auth0/auth0-react";
 import getToday from "../../functions/getToday";
 import "./customCalendar.css";
 
 const CustomCalendar = ({ setDayIsSelected, amountOfDays, dayIsSelected, days, setDays }) => {
-  const daysCalendarCustom = daysMonthCalendarCustom(amountOfDays, false); // devuelve...
-  // {mont1: [ 31 ], mont2:1, [1, 2, 3, 4, 5, 6, 7, 8, 9], currentMonth: 12, nextMonth: 1}
+  const daysCalendarCustom = daysMonthCalendarCustom(amountOfDays, false);
   let { currentMonth, nextMonth } = daysCalendarCustom;
   const daysOfWeek = ["lun", "mar", "mie", "jue", "vie", "sab", "dom"];
-  const getDayPosition = getToday() + 1; // devuelve número que representa qué día de la semana es (lunes, martes, etc)
-console.log(days)
-  const handleDay = (day, colorDay) => {
-    /* setDayIsSelected(prevDays => {  // prevDays representa lo que contiene el estado local
-      const updatedDays = { ...prevDays };  // crea una copia de lo que contenia antes de agregar un dia
-      if (updatedDays[day]) {  // si ya existia un objeto con la clave day la borra
-        delete updatedDays[day];
-      } else {  // si no existia un objeto con esa clave la agrega
-        updatedDays[day] = {        // fijate la jugarreta, crea el objeto para
-          colorDay: colorDay,       // luego acceder a la propiedad day
-          email: user.email,
-        };
+  const getDayPosition = getToday() + 1;
+  const [exist50, setExist50] = useState(false)
+  console.log(dayIsSelected)
+
+  const handleDay = (day, month) => {
+    if (dayIsSelected[month] && dayIsSelected[month][day]) {
+      // Si ya existe en dayIsSelected, lo quitamos
+      const { [day]: _, ...rest } = dayIsSelected[month];
+      
+      setDayIsSelected(prevState => {
+        const newState = { ...prevState, [month]: rest };
+  
+        if (Object.keys(rest).length < 1) {
+          delete newState[month];
+        }
+  
+        return newState;
+      });
+    } else {
+      if (days[month] && days[month][day]) {  // Si existe en days, limpiamos la información anterior y asignamos el nuevo valor
+        setDayIsSelected({
+          [month]: {
+            [day]: {}
+          }
+        })
+        setExist50(true);
+      } else {  // Si no existe en days ni en dayIsSelected, agregamos el nuevo día al estado local
+        if(exist50 == true) {
+          setDayIsSelected({
+            [month]: {
+              [day]: {}
+            }
+          })
+          setExist50(false)
+        }
+        setDayIsSelected(prevState => ({
+          ...prevState,
+          [month]: {
+            ...prevState[month],
+            [day]: {}
+          }
+        }))
+        
       }
-      return updatedDays;  // al retornar dentro del set, solo guarda el retorno
-    }); */
-    console.log("hola")
+    }
   };
 
   return (
@@ -39,22 +66,26 @@ console.log(days)
       <div className="line7">
         {daysCalendarCustom.month1.map((day, index) => {
           let colorDay = "#e0e0e0d2";
-          /* days[currentMonth] && days[currentMonth][day] */
           if (days && days[currentMonth] && days[currentMonth][day]) {
             colorDay = "#5bfd33d0";
+          }
+          if (days && days[currentMonth] && days[currentMonth][day] && days[currentMonth][day].turn) {
+            colorDay = "#e6b226d0"
           }
 
           return (
             <button
               key={index}
               className="month1"
-              onClick={() => handleDay(day, colorDay)}
+              onClick={() => handleDay(day, currentMonth)}
               style={{
                 gridColumnStart: index === 0 ? getDayPosition : "auto",
-                /* ...(index === 0 ? { backgroundColor: "#e0e0e0" } : {}), */
-                backgroundColor: colorDay, // Asignar colorDay al backgroundColor
-                ...(dayIsSelected[day] ? { backgroundColor: 'blue' } : {}) // si el dia existe en el estado local...
-              }}                                                           // cambia el backgraund a azul
+                backgroundColor: colorDay,
+                ...(dayIsSelected[currentMonth] &&
+                  dayIsSelected[currentMonth][day]
+                    ? { backgroundColor: 'blue' }
+                    : {})
+              }}
             >
               {day}
             </button>
@@ -62,12 +93,11 @@ console.log(days)
         })}
 
         {daysCalendarCustom.month2.map((day, index) => {
-          let colorDay = "#e0e0e0d2"; // Inicializar colorDay fuera del mapeo
-          
+          let colorDay = "#e0e0e0d2";
           if (days && days[nextMonth] && days[nextMonth][day]) {
             colorDay = "#5bfd33d0";
           }
-          if (days && days[nextMonth] && days[nextMonth][day] && days[nextMonth][day].turn){
+          if (days && days[nextMonth] && days[nextMonth][day] && days[nextMonth][day].turn) {
             colorDay = "#e6b226d0"
           }
 
@@ -75,11 +105,14 @@ console.log(days)
             <button
               key={index + 100}
               className="month2"
-              onClick={() => handleDay(day, colorDay)}
+              onClick={() => handleDay(day, nextMonth)}
               style={{
-                backgroundColor: colorDay, // Asignar colorDay al backgroundColor
-                ...(dayIsSelected[day] ? { backgroundColor: 'blue' } : {}) // si el dia existe en el estado local..
-              }}                                                           // cambia el backgraund a azul
+                backgroundColor: colorDay,
+                ...(dayIsSelected[nextMonth] &&
+                  dayIsSelected[nextMonth][day]            
+                    ? { backgroundColor: 'blue' }
+                    : {})
+              }}
             >
               {day}
             </button>
