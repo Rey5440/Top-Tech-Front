@@ -69,7 +69,7 @@ const PublicAttention = () => {
         delete updatedTimeForDays[day];
       } else {
         // Si el día no está en el estado, agregarlo
-        updatedTimeForDays[day] = /* lógica para asignar el tiempo */ null;
+        updatedTimeForDays[day] = {};
       }
 
       return updatedTimeForDays;
@@ -77,16 +77,70 @@ const PublicAttention = () => {
   };
 
   const handleNumberOfTurns = (value) => {
+    console.log(value);
+    console.log(typeof value);
+
     // Crear un nuevo array con la cantidad de posiciones especificada por value
     const newArray = Array.from(
       { length: parseInt(value, 10) },
       (_, index) => index + 1
     );
-
     // Actualizar el estado amountOfTurns con el nuevo array
     SetAmountOfTurns(newArray);
+    for (const dayProp in timeForDays) {
+      if (value == 3) {
+        setTimeForDays((prevTimeForDays) => ({
+          ...prevTimeForDays,
+          [dayProp]: {
+            turn1: [],
+            turn2: [],
+            turn3: [],
+          },
+        }));
+      } else if (value == 2) {
+        setTimeForDays((prevTimeForDays) => ({
+          ...prevTimeForDays,
+          [dayProp]: {
+            turn1: [],
+            turn2: [],
+          },
+        }));
+      } else {
+        setTimeForDays((prevTimeForDays) => ({
+          ...prevTimeForDays,
+          [dayProp]: {
+            turn1: [],
+          },
+        }));
+      }
+    }
   };
-  console.log(amountOfTurns);
+
+  const handleSelectTime = (value, name, index) => {
+    // index es un Number
+    let timeInMinutes;
+    if (index == 2 || index == 3) {
+      timeInMinutes = Number(value) + 12;
+    } else {
+      timeInMinutes = Number(value);
+    }
+
+    // Crear una copia del estado actual
+    const updatedTimeForDays = { ...timeForDays };
+
+    for (const dayProp in updatedTimeForDays) {
+      if (name === "minimo") {
+        updatedTimeForDays[dayProp][`turn${index}`][0] = timeInMinutes;
+      } else {
+        updatedTimeForDays[dayProp][`turn${index}`][1] = timeInMinutes;
+      }
+    }
+
+    // Actualizar el estado con la copia actualizada
+    setTimeForDays(updatedTimeForDays);
+  };
+
+  console.log(timeForDays);
   return (
     <div>
       {!showHours ? (
@@ -109,14 +163,7 @@ const PublicAttention = () => {
               );
             })}
           </div>
-          <div>
-            <label>cantidad de turnos</label>
-            <select onChange={(e) => handleNumberOfTurns(e.target.value)}>
-              <option value={1}>1</option>
-              <option value={2}>2</option>
-              <option value={3}>3</option>
-            </select>
-          </div>
+
           <div>
             <button onClick={() => setShowHours(true)}>Asignar horarios</button>
           </div>
@@ -152,16 +199,30 @@ const PublicAttention = () => {
               );
             })}
           </div>
+          <div>
+            <label>cantidad de turnos</label>
+            <select onChange={(e) => handleNumberOfTurns(e.target.value)}>
+              <option value={1}>1</option>
+              <option value={2}>2</option>
+              <option value={3}>3</option>
+            </select>
+          </div>
+          <hr />
         </div>
       )}
       {Object.keys(timeForDays).length > 0 && (
         <div>
           {amountOfTurns.map((amount, index) => {
             return (
-              <div key={index + 100}>
+              <div key={index}>
                 <label htmlFor="">
                   turno {amount} de
-                  <select name="" id="">
+                  <select
+                    name="minimo"
+                    onChange={(e) =>
+                      handleSelectTime(e.target.value, e.target.name, index + 1)
+                    }
+                  >
                     <option value={1}>1</option>
                     <option value={2}>2</option>
                     <option value={3}>3</option>
@@ -178,7 +239,12 @@ const PublicAttention = () => {
                 </label>
                 <label htmlFor="">
                   a
-                  <select name="" id="">
+                  <select
+                    name="maximo"
+                    onChange={(e) =>
+                      handleSelectTime(e.target.value, e.target.name, index + 1)
+                    }
+                  >
                     <option value={1}>1</option>
                     <option value={2}>2</option>
                     <option value={3}>3</option>

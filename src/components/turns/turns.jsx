@@ -66,10 +66,8 @@ const Turns = () => {
               (minute) => minute === "free"
             );
             if (isConsecutive) {
-              const dateParts = workday.date.split("/");
-              const month = parseInt(dateParts[1], 10);
-              const dayOfMonth = parseInt(dateParts[0], 10);
-
+              const month = workday.month
+              const dayOfMonth = workday.day;
               // Verificar si ya existe result[month] y asignar un valor en consecuencia
               result[month] = result[month] || {};
               result[month][dayOfMonth] = "se puede agendar";
@@ -88,9 +86,8 @@ const Turns = () => {
             }
           }
           if (noTimeAvailable) {
-            const dateParts = workday.date.split("/");
-            const month = parseInt(dateParts[1], 10);
-            const dayOfMonth = parseInt(dateParts[0], 10);
+            const month = workday.month;
+            const dayOfMonth = workday.day;
 
             // Verificar si ya existe result[month] y asignar un valor en consecuencia
             result[month] = result[month] || {};
