@@ -7,6 +7,7 @@ import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 import Worker from './components/worker/worker';
 import Nav from './components/nav/nav';
+import Admin from './components/admin/admin';
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 
@@ -47,6 +48,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home user={userData}/>} />
         <Route path="/turnos" element={<Turns/>} />
+        <Route path="/admin" element={<Admin user={userData}/>} />
         <Route path="/worker" element={<Worker user={userData} />} />
       </Routes>
     </div>
